@@ -32,9 +32,10 @@ public class LottoIO {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter("Lotto.txt"))) { // try-with-resources
 			for (int i = 0; i < lottoCount; i++) {
 				writer.write(playLottoSet().toString());
-				if (i != lottoCount) {
+				if (i < lottoCount - 1) {// 避免最後多一次換行
 					writer.newLine();
 				}
+				// buffer 滿時會自動 flush，close 之前也會自動 flush
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,6 +61,7 @@ public class LottoIO {
 	public void queryLottoTXT(int lineNum) {
 		String line = "";
 		try {
+			// 找指定行
 			line = Files.lines(Path.of("Lotto.txt")).skip(lineNum - 1).findFirst().orElse(null);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -67,9 +69,9 @@ public class LottoIO {
 		line = line.substring(1, line.length() - 1); // 去頭尾 []
 		String[] lottoNumArr = line.split(", ");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter("Lotto_new.txt"))) {
-			writer.write("第 " + lineNum + " 大樂透");
+			writer.write("第 " + lineNum + " 大樂透");// 標題
 			writer.newLine();
-			for (String lottoNum : lottoNumArr) {
+			for (String lottoNum : lottoNumArr) {// 寫入
 				writer.write(lottoNum);
 				writer.newLine();
 			}

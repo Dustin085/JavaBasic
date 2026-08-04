@@ -12,21 +12,21 @@ public class Lotto {
 		String[] lottoStrArr = lotto.playLotto();
 		System.out.println("第一題:");
 		System.out.println(Arrays.toString(lottoStrArr));
-		
+
 		System.out.println("第四題:");
 		TreeSet<String> treeSet = lotto.playLottoSet();
 		System.out.println(treeSet.toString());
-		
+
 		System.out.println("第五題:");
 		ArrayList<String> arrayList = lotto.playLottoList(lottoStrArr);
 		System.out.println(arrayList);
-		
+
 		System.out.println("第六題:");
 		HashMap<Integer, String> hashMap = lotto.playLottoMap(treeSet);
 		System.out.println(hashMap.toString());
 	}
 
-	// 1. 大樂透要排序、不重復、如果個位數的話前面補0 (01~49, 取6個)
+	// 1. 大樂透要排序、不重複、如果個位數的話前面補0 (01~49, 取6個)
 	public String[] playLotto() {
 		ArrayList<String> arrayList = new ArrayList<String>();
 		// 直到填滿六個數字為止
@@ -68,7 +68,11 @@ public class Lotto {
 
 	// 5.使用第一個題目回傳string陣列，把裡面的資料放入arrayList裡面
 	public ArrayList<String> playLottoList(String[] lotto) {
-		return new ArrayList<String>(Arrays.asList(lotto));
+		ArrayList<String> lottoList = new ArrayList<String>();
+		for (String num : lotto) {
+			lottoList.add(num);
+		}
+		return lottoList;
 	}
 
 	// 6.使用第四個題目回傳TreeSet陣列，把裡面的資料放入HashMap裡面

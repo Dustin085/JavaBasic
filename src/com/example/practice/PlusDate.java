@@ -20,7 +20,6 @@ public class PlusDate {
 		try {
 			date = simpleDateFormat.parse(dateStr);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

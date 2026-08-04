@@ -29,7 +29,7 @@ public class GuessNumber {
 			System.out.println("猜一個四位數字");
 			// 使用者輸入
 			guess = scanner.next();
-			// TODO 加入更多違法輸入的判斷
+			// TODO 加入更多違法輸入的判斷，擋英文跟重複數字
 			if (guess.length() != 4) { // 輸入非四位字串
 				System.out.println("請輸入四位數字");
 				continue;
