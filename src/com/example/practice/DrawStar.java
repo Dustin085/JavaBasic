@@ -81,7 +81,7 @@ public class DrawStar {
 			// star
 			for (int j = 1; j <= i; j++) {
 				System.out.print("*");
-				if (j != i) {
+				if (j != i) { // 用空格打開星星之間的間距，最後一顆星星不需要空格
 					System.out.print(" ");
 				}
 			}
@@ -107,7 +107,7 @@ public class DrawStar {
 			// 換行
 			System.out.println();
 		}
-		// rows, 下半部
+		// rows, 下半部，與上半部差不多，只是第一個 for 裡面的 i 的起訖顛倒，並且從 num - 1 開始
 		for (int i = num - 1; i >= 1; i--) {
 			// space
 			for (int s = 0; s < num - i; s++) {
