@@ -1,6 +1,10 @@
 package com.example.practice;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,6 +13,8 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.TreeSet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class LottoIO {
 	public static void main(String[] args) {
@@ -17,6 +23,7 @@ public class LottoIO {
 		lottoIO.copyLottoFile();
 		lottoIO.queryLottoTXT(20);
 		lottoIO.createMultipleLottoTXT(100, 20);
+		lottoIO.zipLottoFiles();
 	}
 
 	// 1. 隨機產生100筆大樂透,並將結果輸出至Lotto.txt檔
@@ -55,7 +62,6 @@ public class LottoIO {
 		try {
 			line = Files.lines(Path.of("Lotto.txt")).skip(lineNum - 1).findFirst().orElse(null);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		line = line.substring(1, line.length() - 1); // 去頭尾 []
@@ -68,7 +74,7 @@ public class LottoIO {
 				writer.newLine();
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -93,9 +99,45 @@ public class LottoIO {
 	}
 
 	// 5. 將題目四的20個txt檔壓縮輸出一個zip檔
-//	public void zipLottoFiles() {
-//
-//	}
+	public void zipLottoFiles() {
+		try (FileOutputStream fos = new FileOutputStream("Lotto.zip"); // Stream 代表資料流動的管道，output stream 代表 程式把資料寫出去
+				BufferedOutputStream bos = new BufferedOutputStream(fos);
+				ZipOutputStream zos = new ZipOutputStream(bos);) {
+			for (int fNum = 1; fNum <= 20; fNum++) {
+				String fNumStr = String.valueOf(fNum);
+				if (fNumStr.length() == 1) {
+					fNumStr = "0" + fNumStr;
+				}
+				String fileName = "Lotto_" + fNumStr + ".txt";
+
+				// 建立 zip 項目
+				ZipEntry entry = new ZipEntry(fileName);
+				// 開始寫入
+				zos.putNextEntry(entry);
+
+				// 讀寫檔案
+				try (FileInputStream fis = new FileInputStream(new File(fileName))) {// input stream 代表把資料寫入程式
+
+					// 建立 buffer 暫存區，避免一次讀取過多資料導致記憶體不足 OutOfMemoryError
+					byte[] buffer = new byte[1024];
+					// 紀錄讀取到多少 byte
+					int length;
+
+					// 每次讀取最多 buffer.length 的資料，並且一次一次地將資料寫入 ZIP 檔案
+					while ((length = fis.read(buffer)) > 0) {// read 會回傳這次讀取進 buffer 的 bytes 總數，檔案讀取完畢時回傳 -1
+						zos.write(buffer, 0, length);// 參數一 => buffer, 參數二 => offset, 參數三 => 要寫入的長度
+						// 要注意， buffer 始終不會被清空，所以需要紀錄這次寫入的 byte 長度 length，避免最後一次寫入時寫進了上個 buffer 殘留的資料
+					}
+				}
+
+				// 結束這個 zip 項目
+				zos.closeEntry();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public TreeSet<String> playLottoSet() {
 		// TreeSet 預設按照自然順序排列
